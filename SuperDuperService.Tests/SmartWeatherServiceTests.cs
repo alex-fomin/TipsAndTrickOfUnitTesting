@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Moq;
 using Moq.AutoMock;
 using SuperDuperService.Models;
@@ -16,7 +17,7 @@ namespace SuperDuperService.Tests
 		[Fact]
 		public async Task GetTemperatureAsync_ShouldUseFirstLocation()
 		{
-			var mocker = new AutoMocker();
+			var mocker = new AutoMocker(MockBehavior.Strict);
 
 			mocker.GetMock<ILocationService>()
 				.Setup(x => x.GeocodeAsync("Minsk"))
@@ -29,6 +30,9 @@ namespace SuperDuperService.Tests
 					Temperature = 232.8,
 					Description = "Hot"
 				});
+
+			mocker.Use<IMemoryCache>(new MemoryCache(Options.Create(new MemoryCacheOptions())));
+			mocker.Use<ILogger<SmartWeatherService>>(new NullLogger<SmartWeatherService>());
 
 			var service = mocker.CreateInstance<SmartWeatherService>();
 
