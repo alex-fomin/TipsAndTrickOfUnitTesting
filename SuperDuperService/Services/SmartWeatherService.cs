@@ -26,12 +26,18 @@ namespace SuperDuperService.Services
 
 		public async Task<Weather> GetRealTimeWeatherAsync(string locationName)
 		{
-			_logger.LogDebug("Get temperature for {Name}", locationName);
+			var key = $"Location_{locationName}";
+			var geoLocation = await _memoryCache.GetOrCreateAsync(key, async entry =>
+				{
+					entry.SlidingExpiration = TimeSpan.FromDays(1);
 
-				var geoLocations = await _locationService.GeocodeAsync(locationName);
-				_logger.LogDebug("Got {Count} locations", geoLocations.Length);
+					var geoLocations = await _locationService.GeocodeAsync(locationName);
+					_logger.LogDebug("Got {Count} locations", geoLocations.Length);
 
-			var geoLocation = geoLocations.FirstOrDefault();
+
+					return geoLocations.FirstOrDefault();
+				}
+			);
 
 			if (geoLocation != null)
 			{
@@ -47,7 +53,7 @@ namespace SuperDuperService.Services
 
 		public async Task<Weather> GetWeatherAsync(string locationName)
 		{
-			return await _memoryCache.GetOrCreateAsync($"weather_{locationName}", async cacheEntry =>
+			return await _memoryCache.GetOrCreateAsync(locationName, async cacheEntry =>
 			{
 				var result = await GetRealTimeWeatherAsync(locationName);
 				cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
