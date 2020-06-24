@@ -67,6 +67,8 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="Controllers" t="Include">
           <e p="WeatherControllerTests.cs" t="Include" />
+          <e p="WeatherControllerTests_TestServer.cs" t="Include" />
+          <e p="WeatherControllerTests_WebApplicationFactory.cs" t="Include" />
         </e>
         <e p="HttpContentExtensions2.cs" t="Include" />
         <e p="Integration" t="Include">
