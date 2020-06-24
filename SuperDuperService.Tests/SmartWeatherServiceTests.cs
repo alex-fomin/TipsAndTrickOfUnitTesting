@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
@@ -28,7 +29,7 @@ namespace SuperDuperService.Tests
 					Description = "Hot"
 				});
 
-			var service = new SmartWeatherService(Mock.Of<ILogger<SmartWeatherService>>(), weatherService.Object, locationService.Object);
+			var service = new SmartWeatherService(Mock.Of<ILogger<SmartWeatherService>>(), weatherService.Object, locationService.Object, Mock.Of<IMemoryCache>());
 
 			var actualWeather = await service.GetRealTimeWeatherAsync("Minsk");
 
