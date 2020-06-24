@@ -38,9 +38,11 @@ namespace SuperDuperService.Tests
 
 			var actualWeather = await service.GetRealTimeWeatherAsync("Minsk");
 
-			Assert.Equal(actualWeather.Temperature, 232.8);
-			Assert.Equal(actualWeather.Condition, Condition.Sunny);
-			Assert.Equal(actualWeather.Description, "Hot");
+			actualWeather.Should().BeEquivalentTo(new
+			{
+				Temperature = 232.8,
+				Condition = Condition.Sunny,
+			});
 		}
 	}
 }
